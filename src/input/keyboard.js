@@ -1,15 +1,18 @@
 let DOWN = {};
 const id = Math.random().toString(36).substring(2, 15);
+let lastLogPromise = Promise.resolve();
 
 const sendLog = async (level, msg) => {
-  const response = await fetch("http://localhost:3000/log", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ level: level, id: id, msg: msg }),
-  });
-  return response;
+    lastLogPromise = lastLogPromise.then(() => {
+        return fetch("http://localhost:3000/log ", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ level, id, msg }),
+        });
+    });
+    await lastLogPromise;
 };
 
 // Original keyboard event handlers with simple console logging
