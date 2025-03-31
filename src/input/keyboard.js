@@ -7,7 +7,7 @@ const sendLog = async (level, msg) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ "level": level, "id": id, "msg": msg }),
+    body: JSON.stringify({ level: level, id: id, msg: msg }),
   });
   return response;
 };
@@ -15,15 +15,15 @@ const sendLog = async (level, msg) => {
 // Original keyboard event handlers with simple console logging
 onkeydown = (e) => {
   if (!DOWN[e.keyCode]) {
-    console.log(`Key pressed: ${e.keyCode} (${e.keyCode})`);
-    sendLog("info", `Key pressed: ${e.keyCode} (${e.keyCode})`);
+    console.log(`Key pressed: ${e.code} (${e.keyCode})`);
+    sendLog("info", `Key pressed: ${e.code} (${e.keyCode})`);
   }
   DOWN[e.keyCode] = true;
 };
 
 onkeyup = (e) => {
-  console.log(`Key released: ${e.keyCode} (${e.keyCode})`);
-  sendLog("info", `Key released: ${e.keyCode} (${e.keyCode})`);
+  console.log(`Key released: ${e.code} (${e.keyCode})`);
+  sendLog("info", `Key released: ${e.code} (${e.keyCode})`);
   DOWN[e.keyCode] = false;
 };
 
