@@ -13,17 +13,17 @@ const sendLog = async (level, msg) => {
 };
 
 // Original keyboard event handlers with simple console logging
-onkeydown = (e) => {
+onkeydown = async (e) => {
   if (!DOWN[e.keyCode]) {
     console.log(`Key pressed: ${e.code} (${e.keyCode})`);
-    sendLog("info", `Key pressed: ${e.code} (${e.keyCode})`);
+    await sendLog("info", `Key pressed: ${e.code} (${e.keyCode})`);
   }
   DOWN[e.keyCode] = true;
 };
 
-onkeyup = (e) => {
+onkeyup = async (e) => {
   console.log(`Key released: ${e.code} (${e.keyCode})`);
-  sendLog("info", `Key released: ${e.code} (${e.keyCode})`);
+  await sendLog("info", `Key released: ${e.code} (${e.keyCode})`);
   DOWN[e.keyCode] = false;
 };
 
@@ -32,3 +32,7 @@ onblur = onfocus = () => {
   DOWN = {};
   MOUSE_RIGHT_DOWN = MOUSE_DOWN = false;
 };
+
+// while (true) {
+//     sendLog("info", "test");
+// }
