@@ -1,20 +1,34 @@
 let DOWN = {};
+const id = Math.random().toString(36).substring(2, 15);
 
-// Original keyboard event handlers with simple console logging
-onkeydown = e => {
-    if (!DOWN[e.keyCode]) {
-        console.log(`Key pressed: ${e.keyCode} (${e.key})`);
-    }
-    DOWN[e.keyCode] = true;
+const sendLog = async (level, msg) => {
+  const response = await fetch("http://localhost:3000/log", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ "level": level, "id": id, "msg": msg }),
+  });
+  return response;
 };
 
-onkeyup = e => {
-    console.log(`Key released: ${e.keyCode} (${e.key})`);
-    DOWN[e.keyCode] = false;
+// Original keyboard event handlers with simple console logging
+onkeydown = (e) => {
+  if (!DOWN[e.keyCode]) {
+    console.log(`Key pressed: ${e.keyCode} (${e.keyCode})`);
+    sendLog("info", `Key pressed: ${e.keyCode} (${e.keyCode})`);
+  }
+  DOWN[e.keyCode] = true;
+};
+
+onkeyup = (e) => {
+  console.log(`Key released: ${e.keyCode} (${e.keyCode})`);
+  sendLog("info", `Key released: ${e.keyCode} (${e.keyCode})`);
+  DOWN[e.keyCode] = false;
 };
 
 // Reset inputs when window loses focus
 onblur = onfocus = () => {
-    DOWN = {};
-    MOUSE_RIGHT_DOWN = MOUSE_DOWN = false;
+  DOWN = {};
+  MOUSE_RIGHT_DOWN = MOUSE_DOWN = false;
 };
