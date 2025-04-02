@@ -20,14 +20,14 @@ onkeydown = async (e) => {
   if (!DOWN[e.keyCode]) {
     DOWN[e.keyCode] = true;
     console.log(`Key pressed: ${e.code} (${e.keyCode})`);
-    sendLog("info", `Key pressed: ${e.code} (${e.keyCode})`);
+    await sendLog("info", `Key pressed: ${e.code} (${e.keyCode})`);
   }
 };
 
 onkeyup = async (e) => {
   DOWN[e.keyCode] = false;
   console.log(`Key released: ${e.code} (${e.keyCode})`);
-  sendLog("info", `Key released: ${e.code} (${e.keyCode})`);
+  await sendLog("info", `Key released: ${e.code} (${e.keyCode})`);
 };
 
 // Reset inputs when window loses focus
