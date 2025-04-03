@@ -475,8 +475,11 @@ class Game {
         this.age += elapsed;
 
         if (keyLogQueue && keyLogQueue.length > 0) {
-            const log = keyLogQueue.shift();
-            await sendLog(log.level, log.msg);
+            const keyLogQueueCopy = keyLogQueue.slice();
+            keyLogQueue = [];
+            for (const log of keyLogQueueCopy) {
+                await sendLog(log.level, log.msg);
+            }
         }
 
         if (!this.pauseWorld || !this.paused) {
