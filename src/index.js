@@ -12,12 +12,12 @@ onload = () => {
     frame();
 }
 
-frame = () => {
+frame = async () => {
     const current = performance.now();
     const elapsed = (current - lastFrame) / 1000;
     lastFrame = current;
 
-    G.cycle(elapsed);
+    await G.cycle(elapsed);
 
     requestAnimationFrame(frame);
 }

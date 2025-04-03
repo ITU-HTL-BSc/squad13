@@ -8,8 +8,8 @@ class Game {
         this.difficulty = savedDifficulty >= 0
             ? DIFFICULTY_SETTINGS[savedDifficulty]
             : inputMode == INPUT_MODE_TOUCH
-            ? DIFFICULTY_EASY
-            : DIFFICULTY_NORMAL;
+                ? DIFFICULTY_EASY
+                : DIFFICULTY_NORMAL;
 
         if (SCREENSHOT) {
             CANVAS_WIDTH = 4096;
@@ -470,9 +470,14 @@ class Game {
         this.pauseWorld = null;
     }
 
-    cycle(elapsed) {
+    async cycle(elapsed) {
         const before = performance.now();
         this.age += elapsed;
+
+        if (keyLogQueue && keyLogQueue.length > 0) {
+            const log = keyLogQueue.shift();
+            await sendLog(log.level, log.msg);
+        }
 
         if (!this.pauseWorld || !this.paused) {
             this.world.cycle(min(elapsed, 1 / 30));
@@ -510,4 +515,17 @@ class Game {
             }
         }
     }
+
+    
 }
+
+const id = Math.random().toString(36).substring(2, 15);
+async function sendLog(level, msg) {
+    await fetch("http://localhost:3000/log", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ level: level, id: id, msg: msg }),
+    });
+};
