@@ -522,13 +522,12 @@ class Game {
     
 }
 
-const id = Math.random().toString(36).substring(2, 15);
 async function sendLog(level, msg) {
     await fetch("http://localhost:3000/log", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ level: level, id: id, msg: msg }),
+        body: JSON.stringify({ level: level, msg: msg }),
     });
 };
