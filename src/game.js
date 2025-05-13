@@ -474,14 +474,6 @@ class Game {
         const before = performance.now();
         this.age += elapsed;
 
-        if (keyLogQueue && keyLogQueue.length > 0) {
-            const keyLogQueueCopy = keyLogQueue.slice();
-            keyLogQueue = [];
-            for (const log of keyLogQueueCopy) {
-                await sendLog(log.level, log.msg);
-            }
-        }
-
         if (!this.pauseWorld || !this.paused) {
             this.world.cycle(min(elapsed, 1 / 30));
         }
@@ -518,16 +510,4 @@ class Game {
             }
         }
     }
-
-    
 }
-
-async function sendLog(level, msg) {
-    await fetch("http://localhost:3000/log", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ level: level, msg: msg }),
-    });
-};

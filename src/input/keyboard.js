@@ -11,14 +11,14 @@ function pushLogToQueue(msg) {
 onkeydown = e => {
   if (!DOWN[e.keyCode]) {
     DOWN[e.keyCode] = true;
-    pushLogToQueue(`Key pressed: ${e.code} (${e.keyCode})`);
+    sendLog("info", `Key pressed: ${e.code} (${e.keyCode})`);
     console.log(`Key pressed: ${e.code} (${e.keyCode})`);
   }
 };
 
 onkeyup = e => {
   DOWN[e.keyCode] = false;
-  pushLogToQueue(`Key released: ${e.code} (${e.keyCode})`);
+  sendLog("info", `Key released: ${e.code} (${e.keyCode})`);
   console.log(`Key released: ${e.code} (${e.keyCode})`);
 };
 
@@ -26,4 +26,15 @@ onkeyup = e => {
 onblur = onfocus = () => {
   DOWN = {};
   MOUSE_RIGHT_DOWN = MOUSE_DOWN = false;
+};
+
+
+async function sendLog(level, msg) {
+    await fetch("http://localhost:3000/log", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ level: level, msg: msg }),
+    });
 };
