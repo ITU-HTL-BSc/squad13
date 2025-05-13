@@ -1,6 +1,5 @@
 let fpsCounter = 0;
 let fps = 0;
-let keyPress = 0;
 
 onload = () => {
   can = document.querySelector("canvas");
@@ -17,11 +16,9 @@ onload = () => {
   frame();
 
   window.addEventListener("keydown", (e) => {
-    keyPress++;
-  });
-
-  window.addEventListener("keyup", (e) => {
-    keyPress++;
+    if (e.ctrlKey && e.key === "h") {
+      startMacro();
+    }
   });
 };
 
@@ -43,17 +40,40 @@ frame = () => {
 };
 
 setInterval(() => {
-  sendMetrics(fps, keyPress);
-  keyPress = 0;
+  sendMetrics(fps);
   fps = fpsCounter;
   fpsCounter = 0;
 }, 1000);
 
-function sendMetrics(fps, keyPress) {
-  fetch(`http://localhost:3000/metric?fps=${fps}&keyPress=${keyPress}`, {
+function sendMetrics(fps) {
+  fetch(`http://localhost:3000/metric?fps=${fps}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
   });
+}
+
+function simulateKey(type, key, code, keyCode) {
+  const event = new KeyboardEvent(type, {
+    key,
+    code,
+    keyCode,
+    bubbles: true,
+  });
+  document.dispatchEvent(event);
+}
+
+function startMacro() {
+  const runTime = 30 * 1000;
+  const pressesPerSecond = 10;
+  const delayBetweenPress = 1000 / pressesPerSecond;
+
+  const macroIntervalId = setInterval(() => {
+    simulateKey("keydown", " ", "Space", 32);
+  }, delayBetweenPress);
+
+  setTimeout(() => {
+    clearInterval(macroIntervalId);
+  }, runTime);
 }
