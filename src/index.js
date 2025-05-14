@@ -1,6 +1,10 @@
 let fpsCounter = 0;
 let fps = 0;
 
+let testRunning = false;
+let fpsTestSum = 0;
+let fpsTestCount = 0;
+
 onload = () => {
   can = document.querySelector("canvas");
   can.width = CANVAS_WIDTH;
@@ -16,7 +20,7 @@ onload = () => {
   frame();
 
   window.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.key === "h") {
+    if (e.key === "b") {
       startMacro();
     }
   });
@@ -40,8 +44,11 @@ frame = () => {
 };
 
 setInterval(() => {
-  sendMetrics(fps);
   fps = fpsCounter;
+  if (testRunning){
+    fpsTestSum += fps;
+    fpsTestCount++;
+  }
   fpsCounter = 0;
 }, 1000);
 
@@ -64,16 +71,29 @@ function simulateKey(type, key, code, keyCode) {
   document.dispatchEvent(event);
 }
 
-function startMacro() {
-  const runTime = 30 * 1000;
+const runTime = 30 * 1000;
+function startTest() {
+  testRunning = true;
   const pressesPerSecond = 10;
   const delayBetweenPress = 1000 / pressesPerSecond;
 
   const macroIntervalId = setInterval(() => {
-    simulateKey("keydown", " ", "Space", 32);
+    simulateKey("keyup", " ", "Space", 32);
   }, delayBetweenPress);
 
   setTimeout(() => {
     clearInterval(macroIntervalId);
+    testRunning = false;
+    avgFps = fpsTestSum / fpsTestCount;
+    fpsTestSum = 0;
+    fpsTestCount = 0;
+    sendMetrics(avgFps);
   }, runTime);
+}
+
+async function startMacro() {
+  for (let i = 0; i < 3; i++) {
+    startTest();
+    await new Promise((resolve) => setTimeout(resolve, runTime + 4000));
+  }
 }
