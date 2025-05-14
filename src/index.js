@@ -26,14 +26,14 @@ onload = () => {
   });
 };
 
-frame = () => {
+frame = async () => {
   const current = performance.now();
   const elapsed = (current - lastFrame) / 1000;
   lastFrame = current;
 
   fpsCounter++;
 
-  G.cycle(elapsed);
+  await G.cycle(elapsed);
 
   // Optional: Display FPS on canvas
   ctx.fillStyle = "white";
